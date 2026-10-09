@@ -1,5 +1,5 @@
-from compression import LZ77Compressor, Token, compress
-from decompression import decompress
+from LZ77 import compress, decompress
+from data import Token
 
 
 def main():
@@ -15,20 +15,10 @@ def main():
         if choice == "1":
             text = input("Enter text to compress: ")
 
-            try:
-                compressor = LZ77Compressor(text)
-                tokens = compressor.compress()
-
-                print("\nCompressed tokens:")
-                for token in tokens:
-                    print(token)
-
-                restored = decompress(tokens)
-
-                print("\nVerification:", restored == text)
-
-            except (ValueError, TypeError, IndexError) as error:
-                print("Error:", error)
+            tokens = compress(text)
+            print("\nCompressed tokens:")
+            for token in tokens:
+                print(token)
 
         elif choice == "2":
             print("Enter tokens in this format:")
@@ -38,41 +28,21 @@ def main():
             tokens = []
 
             while True:
-                line = input().strip()
+                line = input()
 
-                if not line:
+                if not line.strip():
                     break
 
                 try:
-                    # Split into 3 parts so char may contain commas.
-                    parts = line.strip("()").split(",", 2)
-
-                    if len(parts) != 3:
-                        raise ValueError("Expected 3 token fields.")
-
-                    start = int(parts[0].strip())
-                    length = int(parts[1].strip())
-                    char = parts[2]
-
-                    if len(char) != 1:
-                        raise ValueError(
-                            "The character must be exactly one character."
-                        )
-
-                    tokens.append(Token(start, length, char))
-
+                    tokens.append(Token.read(line.strip()))
                 except ValueError as error:
                     print("Invalid token:", error)
                     print("Please enter this token again.")
-                    continue
 
-            try:
-                result = decompress(tokens)
-                print("\nDecompressed text:")
-                print(result)
+            result = decompress(tokens)
+            print("\nDecompressed text:")
+            print(result)
 
-            except (ValueError, TypeError, IndexError) as error:
-                print("Error:", error)
 
         elif choice == "3":
             print("Goodbye!")
