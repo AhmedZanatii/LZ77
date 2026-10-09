@@ -39,7 +39,12 @@ def main():
                     print("Invalid token:", error)
                     print("Please enter this token again.")
 
-            result = decompress(tokens)
+            try:
+                result = decompress(tokens)
+            except ValueError as error:
+                print("Error decompressing tokens:", error)
+                continue
+
             print("\nDecompressed text:")
             print(result)
 
